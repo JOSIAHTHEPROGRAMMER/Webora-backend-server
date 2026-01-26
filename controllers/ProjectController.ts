@@ -69,7 +69,7 @@ export const makeRevision = async (req: Request, res: Response) => {
 
         // Enhance user prompt
         const promptEnhanceResponce = await openai.chat.completions.create({
-            model: "openai/gpt-oss-120b:free",
+            model: "liquid/lfm-2.5-1.2b-thinking:free",
             messages: [
                 {
                     role: "system",
