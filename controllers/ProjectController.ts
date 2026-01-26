@@ -111,32 +111,36 @@ export const makeRevision = async (req: Request, res: Response) => {
         })
 
         // Generate website code
-        const codeGenerationResponse = await openai.chat.completions.create({
-            model: "openai/gpt-oss-120b:free", 
-            messages: [
-                {
-                    role: "system",
-                    content: `
-                        You are an expert web developer. 
+     const codeGenerationResponse = await openai.chat.completions.create({
+    model: "openai/gpt-oss-120b:free",
+    messages: [
+        {
+            role: "system",
+            content: `
+                You are an expert web developer. 
 
-                        CRITICAL REQUIREMENTS:
-                        - Return ONLY the complete updated HTML code with the requested changes.
-                        - Use Tailwind CSS for ALL styling (NO custom CSS).
-                        - Use Tailwind utility classes for all styling changes.
-                        - Include all JavaScript in <script> tags before closing </body>
-                        - Make sure it's a complete, standalone HTML document with Tailwind CSS
-                        - Return the HTML Code Only, nothing else
+                CRITICAL REQUIREMENTS:
+                - Return ONLY the complete, updated HTML code with the requested changes.
+                - Make it a full, standalone HTML document including <html>, <head>, <body>, and Tailwind CSS link.
+                - Use Tailwind CSS utility classes for ALL styling. Do NOT include custom CSS.
+                - Include all JavaScript inside <script> tags at the bottom of the <body>.
+                - Ensure that JavaScript is valid, fixes common errors, and avoids unsupported selectors (e.g., ':contains' is not valid in querySelectorAll).
+                - Return ONLY the HTML code, nothing else. No explanations, no comments outside the code.
+            `
+        },
+        {
+            role: "user",
+            content: `
+                Here is the current website code:
+                "${currentProject.current_code}"
 
-                        Apply the requested changes while maintaining the Tailwind CSS styling approach.
-                    `
-                },
-                {
-                    role: "user",
-                    content: `Here is the current website code: "${currentProject.current_code}" 
-                            The user wants these changes: "${enhancedPrompt}"`
-                }
-            ]
-        })
+                The user wants these changes:
+                "${enhancedPrompt}"
+            `
+        }
+    ]
+});
+
 
         const code = codeGenerationResponse.choices[0].message.content || '';
 
