@@ -83,44 +83,45 @@ const generateWebsiteInBackground = async (projectId: string, userId: string, in
         })
 
         // Generate Website Code
-        const codeGenerationResponse = await openai.chat.completions.create({
-            model: "mistralai/devstral-2512:free",
-            messages: [
-                {
-                    role: "system",
-                    content: `
-                        You are an expert web developer. Create a complete, production-ready, single-page website based on this request: "${enhancedPrompt}"
+const codeGenerationResponse = await openai.chat.completions.create({
+    model: "mistralai/devstral-2512:free",
+    messages: [
+        {
+            role: "system",
+            content: `
+                You are an expert web developer. Create a complete, production-ready, single-page website based on the user's request.
 
-                        CRITICAL REQUIREMENTS:
-                            - You MUST output valid HTML ONLY. 
-                            - Use Tailwind CSS for ALL styling
-                            - Include this EXACT script in the <head>: <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                            - Use Tailwind utility classes extensively for styling, animations, and responsiveness
-                            - Make it fully functional and interactive with JavaScript in <script> tag before closing </body>
-                            - Use modern, beautiful design with great UX using Tailwind classes
-                            - Make it responsive using Tailwind responsive classes (sm:, md:, lg:, xl:)
-                            - Use Tailwind animations and transitions (animate-*, transition-*)
-                            - Include all necessary meta tags
-                            - Use Google Fonts CDN if needed for custom fonts
-                            - Use placeholder images from https://placehold.co/600x400
-                            - Use Tailwind gradient classes for beautiful backgrounds
-                            - Make sure all buttons, cards, and components use Tailwind styling
+                CRITICAL REQUIREMENTS:
+                    - Output ONLY valid, complete HTML (with <html>, <head>, <body>).
+                    - Use Tailwind CSS for ALL styling. No custom CSS.
+                    - Include this EXACT script in the <head>: <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                    - Use Tailwind utility classes extensively for styling, animations, and responsiveness
+                    - Include modern, responsive design using Tailwind responsive classes (sm:, md:, lg:, xl:)
+                    - Include Tailwind animations and transitions (animate-*, transition-*)
+                    - Use placeholder images from https://placehold.co/600x400
+                    - Include Google Fonts if custom fonts are needed
+                    - Include all necessary meta tags
+                    - Include all JavaScript in <script> tags before </body>
+                    - JavaScript must be valid and avoid unsupported CSS selectors
+                        * Specifically, do NOT use ':contains()' in querySelector or querySelectorAll
+                        * If filtering elements by text is required, use vanilla JS like Array.from(...).filter(el => el.textContent.includes('text'))
+                    - All buttons, cards, and components must use Tailwind classes
 
-                        CRITICAL HARD RULES:
-                            1. You MUST put ALL output ONLY into message.content.
-                            2. You MUST NOT place anything in "reasoning", "analysis", "reasoning_details", or any hidden fields.
-                            3. You MUST NOT include internal thoughts, explanations, analysis, comments, or markdown.
-                            4. Do NOT include markdown, explanations, notes, or code fences.
+                CRITICAL HARD RULES:
+                    1. Output only the HTML code in message.content
+                    2. Do not include reasoning, comments, explanations, or markdown
+                    3. Do not include any fields other than message.content
 
-                        The HTML should be complete and ready to render as-is with Tailwind CSS.
-                    `
-                },
-                {
-                    role: "user",
-                    content: enhancedPrompt || ''
-                }
-            ]
-        })
+                The HTML must be fully functional, ready to render, and interactive with proper JavaScript.
+            `
+        },
+        {
+            role: "user",
+            content: enhancedPrompt || ''
+        }
+    ]
+})
+
 
         const code = codeGenerationResponse.choices[0].message.content || '';
 
