@@ -69,7 +69,7 @@ export const makeRevision = async (req: Request, res: Response) => {
 
         // Enhance user prompt
         const promptEnhanceResponce = await openai.chat.completions.create({
-            model: "deepseek/deepseek-r1-0528:free", 
+            model: "llama-3.1-8b-instant", 
             messages: [
                 {
                     role: "system",
@@ -112,7 +112,7 @@ export const makeRevision = async (req: Request, res: Response) => {
 
         // Generate website code
      const codeGenerationResponse = await openai.chat.completions.create({
-    model: "openai/gpt-oss-120b:free",
+    model: "openai/gpt-oss-120b",
     messages: [
         {
             role: "system",

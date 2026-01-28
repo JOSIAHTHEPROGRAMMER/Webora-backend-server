@@ -38,7 +38,7 @@ const generateWebsiteInBackground = async (projectId: string, userId: string, in
     try {
         // Enhance User Prompt
         const enhanceUserPrompt = await openai.chat.completions.create({
-            model: "mistralai/devstral-2512:free",
+            model: "llama-3.1-8b-instant",
             messages: [
                 {
                     role: "system",
@@ -84,7 +84,7 @@ const generateWebsiteInBackground = async (projectId: string, userId: string, in
 
         // Generate Website Code
 const codeGenerationResponse = await openai.chat.completions.create({
-    model: "mistralai/devstral-2512:free",
+    model: "openai/gpt-oss-120b",
     messages: [
         {
             role: "system",
