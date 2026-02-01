@@ -460,7 +460,7 @@ export const purchaseCredits = async (req: Request, res: Response) => {
             line_items: [
                 {
                     price_data: {
-                        currency: 'usd',
+                        currency: 'ttd',
                         product_data: {
                             name: `webora - ${plan.credits} credits`,
                         },
