@@ -89,31 +89,48 @@ const codeGenerationResponse = await openai.chat.completions.create({
         {
             role: "system",
             content: `
-                You are an expert web developer. Create a complete, production-ready, single-page website based on the user's request.
+                    You are an expert web developer. Create a complete, production-ready, single-page website based on the user's request.
 
-                CRITICAL REQUIREMENTS:
-                    - Output ONLY valid, complete HTML (with <html>, <head>, <body>).
+                    CRITICAL REQUIREMENTS:
+                    - Output ONLY valid, complete HTML (with <html>, <head>, <body>)
                     - Use Tailwind CSS for ALL styling. No custom CSS.
                     - Include this EXACT script in the <head>: <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
                     - Use Tailwind utility classes extensively for styling, animations, and responsiveness
-                    - Include modern, responsive design using Tailwind responsive classes (sm:, md:, lg:, xl:)
-                    - Include Tailwind animations and transitions (animate-*, transition-*)
-                    - Use placeholder images from https://placehold.co/600x400
+                    - Include modern, responsive design using Tailwind responsive classes (sm:, md:, lg:, xl:, 2xl:)
+                    - Include Tailwind animations and transitions (animate-*, transition-*, hover:, focus:)
+                    - Use semantic HTML5 elements (header, nav, main, section, footer, article)
+                    - Include all necessary meta tags (viewport, charset, description)
                     - Include Google Fonts if custom fonts are needed
-                    - Include all necessary meta tags
                     - Include all JavaScript in <script> tags before </body>
-                    - JavaScript must be valid and avoid unsupported CSS selectors
-                        * Specifically, do NOT use ':contains()' in querySelector or querySelectorAll
-                        * If filtering elements by text is required, use vanilla JS like Array.from(...).filter(el => el.textContent.includes('text'))
-                    - All buttons, cards, and components must use Tailwind classes
 
-                CRITICAL HARD RULES:
-                    1. Output only the HTML code in message.content
-                    2. Do not include reasoning, comments, explanations, or markdown
-                    3. Do not include any fields other than message.content
+                    PLACEHOLDER IMAGES - Choose the most appropriate for context:
+                    - Static placeholders: https://placehold.co/600x400
+                    - Photo placeholders: https://picsum.photos/600/400
+                    - AI-generated images: https://placeholdr.dev/600x400/
+                    * For AI images, customize the prompt in the URL (e.g., /600x400/modern%20office%20space)
+                    * Use AI placeholders for specific themes, scenes, or styled imagery
 
-                The HTML must be fully functional, ready to render, and interactive with proper JavaScript.
-            `
+                    JAVASCRIPT REQUIREMENTS:
+                    - JavaScript must be valid ES6+ and avoid unsupported CSS selectors
+                    - Specifically, do NOT use ':contains()' in querySelector or querySelectorAll
+                    - If filtering elements by text is required, use: Array.from(elements).filter(el => el.textContent.includes('text'))
+                    - Ensure all event listeners are properly attached
+                    - Use modern JavaScript features (const/let, arrow functions, template literals)
+
+                    DESIGN REQUIREMENTS:
+                    - All buttons, cards, forms, and components must use Tailwind classes
+                    - Implement proper color schemes using Tailwind color utilities
+                    - Add appropriate hover and focus states for interactive elements
+                    - Include smooth transitions and micro-interactions
+
+                    CRITICAL OUTPUT RULES:
+                    1. Output ONLY the HTML code in message.content
+                    2. Do NOT include reasoning, comments, explanations, or markdown
+                    3. Do NOT include any fields other than message.content
+                    4. Do NOT wrap the HTML in code blocks or backticks
+
+                    The HTML must be fully functional, ready to render, and interactive with proper JavaScript.
+                    `
         },
         {
             role: "user",
@@ -121,6 +138,7 @@ const codeGenerationResponse = await openai.chat.completions.create({
         }
     ]
 })
+
 
 
         const code = codeGenerationResponse.choices[0].message.content || '';
@@ -229,11 +247,39 @@ export const createNewProject = async (req: Request, res: Response) => { // crea
         if (user && user.credits < 5) {
             return res.status(403).json({ message: 'Add credits to create more projects.' });
         }
+const nameResponse = await openai.chat.completions.create({
+    model: "llama-3.1-8b-instant",
+    messages: [
+        {
+            role: "system",
+            content: `Generate a concise, descriptive project title based 
+            on the user's description. Requirements:\n- 2-5 words maximum\n- 
+            Title Case formatting\n- No prefixes like 'Project Name:', 'Title:', etc.\n- 
+            No punctuation marks\n- No quotation marks\n- No emojis or special characters\n- 
+            Return ONLY the title itself, nothing else`
+        },
+        {
+            role: "user",
+            content: initial_prompt
+        }
+    ],
+    max_tokens: 20,
+    temperature: 0.4
+});
+
+
+        const rawName = nameResponse?.choices?.[0]?.message?.content;
+
+        const generatedName =
+        typeof rawName === "string" && rawName.trim().length > 0
+            ? rawName.trim()
+            : "Website Project";
+
 
         // Create new project
         const project = await prisma.websiteProject.create({
             data: {
-                name: initial_prompt.length > 50 ? initial_prompt.substring(0, 47) + '...' : initial_prompt,
+                name: generatedName,
                 initial_prompt,
                 userId
             }
