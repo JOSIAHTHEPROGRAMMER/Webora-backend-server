@@ -34,7 +34,7 @@ For the frontend application, visit [Webora](https://github.com/JOSIAHTHEPROGRAM
 
 - RESTful API built with Express and TypeScript
 - Secure authentication with Better Auth
-- AI-powered website generation using OpenRouter
+- AI-powered website generation using Groq
 - PostgreSQL database with Prisma ORM
 - Stripe integration for payment processing
 - Credit-based system for AI generations
@@ -94,8 +94,8 @@ For the frontend application, visit [Webora](https://github.com/JOSIAHTHEPROGRAM
 
 ### AI Integration
 
-- OpenRouter integration for AI-powered generation
-- Support for multiple AI models (Mistral Devstral)
+- Groq integration for AI-powered generation
+- Support for multiple AI models
 - Intelligent prompt processing and enhancement
 - Automatic Tailwind CSS styling
 - Revision and iteration capabilities
@@ -141,7 +141,7 @@ Ensure you have the following installed:
 You'll need accounts and API keys for:
 
 1. **Neon** (Database): [console.neon.tech](https://console.neon.tech)
-2. **OpenRouter** (AI): [openrouter.ai](https://openrouter.ai)
+2. **Groq** (AI): [Groq.ai](https://Groq.ai)
 3. **Stripe** (Payments): [dashboard.stripe.com](https://dashboard.stripe.com)
 
 ### Installation
@@ -178,7 +178,7 @@ TRUSTED_ORIGINS="http://localhost:5173"
 NODE_ENV="development"
 
 # AI
-AI_API_KEY="your-openrouter-api-key"
+GROQ_API_KEY="your-Groq-api-key"
 
 # Payments
 STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key"
@@ -219,7 +219,7 @@ The server will be available at `http://localhost:3000`
 ```
 webora-backend-server/
 ├── configs/
-│   └── openai.ts              # OpenAI/OpenRouter client setup
+│   └── openai.ts              # OpenAI/Groq client setup
 ├── controllers/
 │   ├── ProjectController.ts   # Project management logic
 │   ├── userController.ts      # User and credit management
@@ -749,7 +749,7 @@ BETTER_AUTH_SECRET="<generate-new-secret-for-production>"
 BETTER_AUTH_URL="https://your-backend.vercel.app"
 TRUSTED_ORIGINS="https://your-frontend.vercel.app"
 NODE_ENV="production"
-AI_API_KEY="<your-openrouter-api-key>"
+GROQ_API_KEY="<your-groq-api-key>"
 STRIPE_SECRET_KEY="<your-stripe-live-key>"
 STRIPE_WEBHOOK_SECRET="<your-webhook-secret>"
 ```
@@ -814,7 +814,7 @@ Update `TRUSTED_ORIGINS` with your production frontend URL and redeploy.
 | `BETTER_AUTH_URL` | Base URL of the backend server | Yes | - |
 | `TRUSTED_ORIGINS` | Allowed CORS origins (comma-separated) | Yes | - |
 | `NODE_ENV` | Environment mode | No | development |
-| `AI_API_KEY` | OpenRouter API key | Yes | - |
+| `GROQ_API_KEY` | Groq API key | Yes | - |
 | `STRIPE_SECRET_KEY` | Stripe secret key | Yes | - |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret | Yes | - |
 
@@ -832,13 +832,13 @@ The Prisma schema is located at `prisma/schema.prisma`. To modify the database s
    npx prisma migrate deploy
    ```
 
-### OpenRouter Configuration
+### Groq Configuration
 
 Located in `configs/openai.ts`:
 
 ```typescript
 const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
+  baseURL: "https://Groq.ai/api/v1",
   apiKey: process.env.AI_API_KEY,
 });
 ```
@@ -956,7 +956,7 @@ This project is built with the following technologies:
 - [Prisma](https://www.prisma.io/) - ORM
 - [PostgreSQL](https://www.postgresql.org/) - Database
 - [Better Auth](https://github.com/better-auth/better-auth) - Authentication
-- [OpenRouter](https://openrouter.ai/) - AI API Gateway
+- [Groq](https://groq.com/) - AI API Gateway
 - [Stripe](https://stripe.com/) - Payment Processing
 - [Vercel](https://vercel.com/) - Deployment Platform
 - [Neon](https://neon.tech/) - Serverless PostgreSQL
